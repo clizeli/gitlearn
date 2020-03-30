@@ -17,7 +17,7 @@ def fullname():
 	ExcelFullName= os.path.join(excelPath,excelName)
 	print('***fullname生成保存文件名测试****')
 	print("Excel的文件名为：%s"%ExcelFullName)
-	
+	return(excelPath,excelName)
 
 
 #写数据
@@ -37,14 +37,18 @@ def def_head():
 
 
 	#写入表头
-def xlhead(alist):
-	wb = openpyxl.Workbook()
-	ws = wb.create_sheet(index=0, title="mergfile")
-	ws = wb.active
+wb = openpyxl.Workbook()
+ws = wb.create_sheet(index=0, title="mergfile")
+ws = wb.active
+def xlhead(alist,ws):
+#	wb = openpyxl.Workbook()
+#	ws = wb.create_sheet(index=0, title="mergfile")
+#	ws = wb.active
 #	if tableTitle(row) < 1 or tableTitle(col) < 1:
 #		raise ValueError("Row or column values must be at least 1")
 #	else:
 	print('***xlhead测试***')
+#alist为列表，ws为打开活动的工作表
 	for col in range(len(alist)):
 		c=col+1
 		m=ws.cell(row=1,column=c).value=alist[col]
@@ -52,20 +56,41 @@ def xlhead(alist):
 
 
 
+#写入数据
+#slist原始数据为于表头相对应的list格式数据,ws为打开活动的工作表
+def fildata(slist,ws):
+	for row in range(len(slist)):
+		ws.append(slist[row])
+	print('fildata执行完毕')
 
 
-
+#保存到生成的excel文件,filename为文件名
+#指定保存路径格式：wb.save("F:/my_file/Python_files/others/{}".format(Marvel1))
+def savexl(savepath,filename):
+	if os.path.exists(savepath)==False:	
+		os.makedirs(savepath)   #创建目录
+	else:
+		pass
+	fulpath= savepath+"/{}"        
+	wb.save(fulpath.format(filename))
+	print('文件已保存在:',savepath)
 
 
 
 
 
 if __name__=='__main__':
-	fullname()
+	pathandname=fullname()
+	savepath=pathandname[0]
+	filename=pathandname[1]
+	print(savepath,filename)
 #	tableTitle = ['userName', 'Phone', 'age', 'Remark']
 	tableTitle=def_head()
 	print(tableTitle)
-	xlhead(tableTitle)
+	xlhead(tableTitle,ws)
+	slist=[['张学友', 15201062100, 18, '测试数据！'], ['李雷', 15201062598, 19, '测试数据！'],['Marry', 15201062191, 28, '测试数据！']]
+	fildata(slist,ws)
+	savexl(savepath,filename)
 
 
 
